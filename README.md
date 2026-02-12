@@ -74,6 +74,6 @@ pip install scikit-learn pandas matplotlib seaborn numpy
 ### Execution
 Run the script to train models and generate plots:
 ```bash
-python M25CSA032_prob4.py
+python3 M25CSA032_prob4.py
 ```
 *The script ends with an interactive mode where you can type sentences to test the classifier in real-time.*
