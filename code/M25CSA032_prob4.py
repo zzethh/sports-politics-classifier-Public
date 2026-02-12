@@ -12,10 +12,9 @@ from math import pi
 # charts + a CSV of all the results.
 #
 # I went with scikit-learn for the ML side since the assignment
-# allows external libraries for this problem.  The main goal is
-# comparing at least 3 different ML techniques, so I tried five:
-# Naive Bayes, SVM, Logistic Regression, Random Forest, and
-# Gradient Boosting.
+# allowing external libraries for this problem.  The main goal is
+# comparing at least 3 different ML techniques, so I tried three:
+# Naive Bayes, SVM, and Random Forest.
 #
 # Results and plots get saved under nlp_final_results/ — the
 # LaTeX report references these files directly.
@@ -93,7 +92,7 @@ def load_data():
 
     categories = [
         'rec.sport.hockey', 'rec.sport.baseball',
-        'talk.politics.guns', 'talk.politics.mideast'
+        'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc'
     ]
 
     dataset = fetch_20newsgroups(
@@ -127,22 +126,19 @@ def get_configs():
     }
 
     feature_sets = {
-        'BoW':            CountVectorizer(ngram_range=(1, 1)),
-        'BoW Bigram':     CountVectorizer(ngram_range=(2, 2)),
-        'TF-IDF':         TfidfVectorizer(ngram_range=(1, 1)),
-        'TF-IDF Bigram':  TfidfVectorizer(ngram_range=(2, 2)),
-        'TF-IDF Trigram': TfidfVectorizer(ngram_range=(3, 3)),
-        'N-gram(1,2)':    CountVectorizer(ngram_range=(1, 2)),
+        'BoW':            CountVectorizer(ngram_range=(1, 1), stop_words='english', lowercase=True),
+        'BoW Bigram':     CountVectorizer(ngram_range=(2, 2), stop_words='english', lowercase=True),
+        'TF-IDF':         TfidfVectorizer(ngram_range=(1, 1), stop_words='english', lowercase=True),
+        'TF-IDF Bigram':  TfidfVectorizer(ngram_range=(2, 2), stop_words='english', lowercase=True),
+        'TF-IDF Trigram': TfidfVectorizer(ngram_range=(3, 3), stop_words='english', lowercase=True),
+        'N-gram(1,2)':    CountVectorizer(ngram_range=(1, 2), stop_words='english', lowercase=True),
     }
 
     # which (feature, model) pairs to actually run
     experiments = [
-        ('BoW', 'NB'),   ('BoW', 'LR'),   ('BoW', 'SVM'),
-        ('BoW Bigram', 'RandomForest'),
-        ('TF-IDF', 'SVM'), ('TF-IDF', 'NB'), ('TF-IDF', 'LR'),
-        ('TF-IDF Bigram', 'SVM'),
-        ('TF-IDF Trigram', 'GradBoost'),
-        ('N-gram(1,2)', 'SVM'), ('N-gram(1,2)', 'NB'),
+        ('BoW', 'NB'),   ('BoW', 'SVM'),   ('BoW', 'RandomForest'),
+        ('TF-IDF', 'NB'), ('TF-IDF', 'SVM'), ('TF-IDF', 'RandomForest'),
+        ('N-gram(1,2)', 'NB'), ('N-gram(1,2)', 'SVM'), ('N-gram(1,2)', 'RandomForest'),
     ]
 
     return classifiers, feature_sets, experiments

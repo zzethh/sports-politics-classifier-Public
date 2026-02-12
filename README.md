@@ -1,88 +1,79 @@
-## NLU Assignment 1 – Zenith (M25CSA032)
+# Sports vs. Politics Text Classifier 🏈 🏛️
 
-This repository contains my solutions for **CSL 7640: Natural Language Understanding – Assignment 1**.  
-Each problem is implemented in a separate Python file following the required naming conventions.
+> **NLU Assignment 1 — Problem 4**  
+> **Author:** M25CSA032  
+> **Best Model Accuracy:** 96.00% (Bag-of-Words + Naive Bayes)
 
----
+## 📌 Overview
+This project implements a robust text classification pipeline to distinguish between **Sports** and **Politics** articles using the 20 Newsgroups dataset. It explores various combinations of feature extraction techniques (BoW, TF-IDF, N-grams) and classification algorithms (Naive Bayes, SVM, and Random Forest) to identify the optimal approach.
 
-### Problem 1 – Reggy++ (`M25CSA032_prob1.py`, `M25CSA032_prob1.log`, `M25CSA032_prob1.txt`)
+## 📂 Project Structure
+- `M25CSA032_prob4.py`: Main script for data loading, training, evaluation, and visualization.
+- `M25CSA032_prob4.tex`: Detailed LaTeX report analyzing the findings.
+- `nlp_final_results/`: Generated high-resolution plots and results CSV.
 
-- **Goal**: Extend the in‑class *Reggy* chatbot using only regular expressions and basic string processing.
-- **Features implemented**:
-  - Asks for the user’s birthday in multiple formats (numeric and text month) and computes age.
-  - Asks for mood and responds appropriately, handling small typos and repeated characters.
-  - Extracts the surname from a full name (last word heuristic).
-  - Interactive loop so the chatbot can be run multiple times to observe its “naturalness”.
-- **How to run**:
-  - `python3 M25CSA032_prob1.py`
-- **Deliverables**:
-  - `M25CSA032_prob1.py` – chatbot implementation.
-  - `M25CSA032_prob1.log` – transcripts from multiple runs, including successful, typo‑heavy and failure cases.
-  - `M25CSA032_prob1.txt` – reflection (300–500 words) on naturalness, strengths and limitations of regex‑based interaction.
+## 🚀 Methodology
 
----
+### 1. Data Processing
+*   **Source**: 20 Newsgroups dataset (`sklearn.datasets.fetch_20newsgroups`).
+*   **Categories**:
+    *   **Sports**: `rec.sport.hockey`, `rec.sport.baseball`
+    *   **Politics**: `talk.politics.guns`, `talk.politics.mideast`, `talk.politics.misc`
+*   **Preprocessing**:
+    *   Removal of headers, footers, and quoted replies to prevent data leakage.
+    *   Lowercase normalization.
+    *   Stopword removal (English) to focus on meaningful content.
 
-### Problem 2 – Byte Pair Encoding (`M25CSA032_prob2.py`, `corpus.txt`)
+### 2. Feature Extraction
+We experimented with multiple vectorization strategies:
+*   **Bag of Words (BoW)**: Simple frequency counts.
+*   **TF-IDF**: Weighted importance to penalize common terms.
+*   **N-grams**: Unigrams, Bigrams, and Trigrams to capture phrase-level context.
 
-- **Goal**: Implement **Byte Pair Encoding (BPE) tokenization from scratch** using only standard Python libraries.
-- **Main steps**:
-  - Read a training corpus from `corpus.txt` (one sentence / word sequence per line).
-  - Build a character‑level vocabulary with explicit end‑of‑word markers `</w>`.
-  - Repeatedly merge the most frequent adjacent symbol pair **K** times.
-  - Output the final set of learned subword tokens.
-- **How to run**:
-  - `python3 M25CSA032_prob2.py K corpus.txt`  
-    where **K** is the number of merge operations.
-- **Corpus**:
-  - `corpus.txt` contains several groups of related words (comparatives, verb forms, derivations) so that the learned merges are interpretable.
+### 3. Classification Models
+*   **Naive Bayes (Multinomial)**: Simple probabilistic baseline that performed best.
+*   **Support Vector Machine (SVM)**: Linear kernel for high-dimensional separation.
+*   **Random Forest**: Ensemble method to capture non-linear patterns.
 
----
+## 📊 Results & Analysis
 
-### Problem 3 – Naive Bayes Sentiment Classifier (`M25CSA032_prob3.py`, `pos.txt`, `neg.txt`)
+We trained and evaluated **15 different configurations**. The results highlight the effectiveness of simple, robust baselines for distinct topic classification.
 
-- **Goal**: Build a **Naive Bayes sentiment classifier from scratch**.
-- **Pipeline**:
-  - Read positive sentences from `pos.txt` and negative sentences from `neg.txt` (one per line).
-  - Tokenize with simple whitespace splitting and lowercasing (as required).
-  - Estimate priors and word likelihoods with **Laplace (+1) smoothing**.
-  - Use an 80/20 train–validation split to check performance.
-  - Enter an interactive mode where the user can type a sentence and receive a `POSITIVE` or `NEGATIVE` prediction.
-- **How to run**:
-  - `python3 M25CSA032_prob3.py`
-  - After training, follow the on‑screen prompt to input sentences or type `exit` to quit.
+| Feature Set | Classifier | Accuracy | F1-Score |
+| :--- | :--- | :--- | :--- |
+| **Bag of Words** | **Naive Bayes** | **96.00%** | **0.96** |
+| N-gram (1,2) | Naive Bayes | 95.89% | 0.96 |
+| TF-IDF | Naive Bayes | 95.56% | 0.96 |
+| TF-IDF | SVM | 95.35% | 0.95 |
+| N-gram (1,2) | Random Forest | 94.16% | 0.94 |
+| TF-IDF | Random Forest | 93.29% | 0.93 |
+| Bag of Words | Random Forest | 93.07% | 0.93 |
+| N-gram (1,2) | SVM | 91.77% | 0.92 |
+| Bag of Words | SVM | 91.67% | 0.92 |
 
----
+### Key Findings
+1.  **Simplicity Wins**: The simplest model (`BoW + Naive Bayes`) achieved the highest accuracy (**96.00%**).
+2.  **Stopwords Matter**: Removing stopwords significantly reduced noise, allowing the models to focus on topic-specific keywords like "game", "team" (Sports) vs "government", "rights" (Politics).
+3.  **TF-IDF vs BoW**: While TF-IDF is usually superior, BoW edged it out here, likely because the two topics have very distinct vocabularies where raw frequency is a strong enough signal.
 
-### Problem 4 – Sports vs Politics Classification (`M25CSA032_prob4.py`, `M25CSA032_prob4.tex`, `nlp_final_results/`)
+## 📈 Visualizations
+The script generates 7 high-quality visualizations in `nlp_final_results/`, including:
+*   **Confusion Matrix**: To pinpoint misclassifications.
+*   **Model Ranking**: A horizontal bar chart comparing all 15 configurations.
+*   **Top Keywords**: Identifying the most predictive words for each class.
+*   **Class Balance**: Donut chart verifying dataset distribution.
 
-- **Goal**: Design a **binary topic classifier** that distinguishes between Sports and Politics documents using modern ML techniques.
-- **Data & features**:
-  - Uses a subset of the 20 Newsgroups dataset (sports and politics groups only).
-  - Compares several feature representations: Bag of Words, Bag of Words bigrams, TF‑IDF, TF‑IDF bigrams/trigrams, and Count‑based N‑grams (1,2).
-  - Evaluates multiple models: Multinomial Naive Bayes, Linear SVM, Logistic Regression, Random Forest, and Gradient Boosting.
-- **Outputs**:
-  - A CSV file `nlp_final_results/final_results.csv` with accuracy and weighted F1 for each feature–model configuration.
-  - Visualisations saved to `nlp_final_results/`, including:
-    - Top‑word bar charts for Sports and Politics.
-    - A donut chart of class distribution.
-    - A horizontal bar chart ranking all configurations by accuracy.
-    - A confusion matrix and radar plot for the best‑performing model.
-  - A detailed LaTeX report:
-    - `M25CSA032_prob4.tex` – describes data collection, feature design, models, results, quantitative comparisons, and limitations.
-    - Can be compiled to `M25CSA032_prob4.pdf` using `pdflatex`.
-- **How to run**:
-  - Before running the classifier, install the required libraries (user‑level install):
-    - `pip install --user scikit-learn pandas matplotlib seaborn`
-  - Then run:
-    - `python3 M25CSA032_prob4.py`
-  - After execution, check the `nlp_final_results/` folder for CSV + figures and compile the LaTeX file to generate the final report PDF.
+## 💻 How to Run
 
----
+### Prerequisites
+```bash
+pip install scikit-learn pandas matplotlib seaborn numpy
+```
+*(On the cluster, use `module load python/3.10`)*
 
-### Notes
-
-- All Python files use only the libraries permitted in the assignment:
-  - Problems 1–3: Python standard library only.
-  - Problem 4: Scikit‑learn, NumPy, pandas, matplotlib, and seaborn for ML and plotting.
-- File names and interfaces follow the exact conventions specified in `NLU_Assignment-1.pdf` so that each problem can be graded and executed independently.
-
+### Execution
+Run the script to train models and generate plots:
+```bash
+python M25CSA032_prob4.py
+```
+*The script ends with an interactive mode where you can type sentences to test the classifier in real-time.*
