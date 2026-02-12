@@ -4,15 +4,15 @@
 > **Author:** M25CSA032  
 > **Best Model Accuracy:** 96.00% (Bag-of-Words + Naive Bayes)
 
-## 📌 Overview
+##  Overview
 This project implements a robust text classification pipeline to distinguish between **Sports** and **Politics** articles using the 20 Newsgroups dataset. It explores various combinations of feature extraction techniques (BoW, TF-IDF, N-grams) and classification algorithms (Naive Bayes, SVM, and Random Forest) to identify the optimal approach.
 
-## 📂 Project Structure
+##  Project Structure
 - `M25CSA032_prob4.py`: Main script for data loading, training, evaluation, and visualization.
 - `M25CSA032_prob4.tex`: Detailed LaTeX report analyzing the findings.
 - `nlp_final_results/`: Generated high-resolution plots and results CSV.
 
-## 🚀 Methodology
+##  Methodology
 
 ### 1. Data Processing
 *   **Source**: 20 Newsgroups dataset (`sklearn.datasets.fetch_20newsgroups`).
@@ -35,7 +35,7 @@ We experimented with multiple vectorization strategies:
 *   **Support Vector Machine (SVM)**: Linear kernel for high-dimensional separation.
 *   **Random Forest**: Ensemble method to capture non-linear patterns.
 
-## 📊 Results & Analysis
+##  Results & Analysis
 
 We trained and evaluated **15 different configurations**. The results highlight the effectiveness of simple, robust baselines for distinct topic classification.
 
@@ -56,14 +56,14 @@ We trained and evaluated **15 different configurations**. The results highlight 
 2.  **Stopwords Matter**: Removing stopwords significantly reduced noise, allowing the models to focus on topic-specific keywords like "game", "team" (Sports) vs "government", "rights" (Politics).
 3.  **TF-IDF vs BoW**: While TF-IDF is usually superior, BoW edged it out here, likely because the two topics have very distinct vocabularies where raw frequency is a strong enough signal.
 
-## 📈 Visualizations
+##  Visualizations
 The script generates 7 high-quality visualizations in `nlp_final_results/`, including:
 *   **Confusion Matrix**: To pinpoint misclassifications.
 *   **Model Ranking**: A horizontal bar chart comparing all 15 configurations.
 *   **Top Keywords**: Identifying the most predictive words for each class.
 *   **Class Balance**: Donut chart verifying dataset distribution.
 
-## 💻 How to Run
+##  How to Run
 
 ### Prerequisites
 ```bash
