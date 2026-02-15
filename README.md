@@ -1,8 +1,10 @@
-# Sports vs. Politics Text Classifier 🏈 🏛️
+# Sports vs. Politics Text Classifier
 
 > **NLU Assignment 1 — Problem 4**  
 > **Author:** M25CSA032  
-> **Best Model Accuracy:** 96.00% (Bag-of-Words + Naive Bayes)
+> **Best Model Accuracy:** 96.00% (Bag-of-Words + Naive Bayes)  
+> **GitHub Repository:** [sports-politics-classifier-Public](https://github.com/zzethh/sports-politics-classifier-Public)  
+> **Live Page:** [Project Page](https://zzethh.github.io/sports-politics-classifier-Public/)
 
 ## Overview
 
@@ -11,6 +13,7 @@ This project implements a robust text classification pipeline to distinguish bet
 ## Project Structure
 
 - `M25CSA032_prob4.py`: Main script for data loading, training, evaluation, and visualization.
+- `M25CSA032_prob4.tex`: Detailed LaTeX report analyzing the findings.
 - `nlp_final_results/`: Generated high-resolution plots and results CSV.
 
 ## Methodology
