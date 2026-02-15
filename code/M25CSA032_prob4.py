@@ -6,18 +6,19 @@ from math import pi
 # NLU Assignment 1 – Problem 4: Sports vs Politics Classifier
 # Zenith | M25CSA032
 #
-# This is the big one — an end-to-end text classification pipeline
-# that loads a sports/politics subset of 20 Newsgroups, tries out
-# a bunch of feature+model combos, and spits out nice-looking
-# charts + a CSV of all the results.
+# This assignment builds a complete end-to-end text classification
+# pipeline. It uses a sports vs. politics subset of the 20 Newsgroups
+# dataset, experiments with multiple feature representations and
+# machine learning models, and generates comparison plots along with
+# a CSV file summarizing the results.
 #
-# I went with scikit-learn for the ML side since the assignment
-# allowing external libraries for this problem.  The main goal is
-# comparing at least 3 different ML techniques, so I tried three:
+# I used scikit-learn for the implementation since external libraries
+# were allowed for this problem. The main objective was to compare at
+# least three different ML techniques, so I implemented and evaluated
 # Naive Bayes, SVM, and Random Forest.
 #
-# Results and plots get saved under nlp_final_results/ — the
-# LaTeX report references these files directly.
+# All results and visualizations are saved in the `nlp_final_results/`
+# directory, and the LaTeX report directly references those outputs.
 # ---------------------------------------------------------------
 
 try:
@@ -44,11 +45,6 @@ except ImportError as e:
     sys.exit(1)
 
 
-# ---------- colour palette & style setup ----------
-# I wanted the charts to look cohesive, so I picked a palette inspired
-# by sunset/ocean tones — warm corals for one class, cool teals for
-# the other, and a rich gradient for the ranking chart.
-
 CORAL      = '#FF6B6B'
 SOFT_RED   = '#EE5A6A'
 TEAL       = '#4ECDC4'
@@ -58,14 +54,14 @@ DEEP_NAVY  = '#1A1A2E'
 SLATE      = '#34495E'
 LIGHT_BG   = '#F8F9FA'
 
-# gradient for bar charts (goes from warm coral to cool teal)
+# gradient for bar charts 
 def _bar_gradient(n):
     """Generate n colours that smoothly transition coral → teal."""
     return [
         plt.cm.coolwarm(x) for x in np.linspace(0.15, 0.85, n)
     ]
 
-# set a clean modern look for all plots
+
 rcParams['font.family'] = 'sans-serif'
 rcParams['font.size'] = 12
 rcParams['axes.facecolor'] = LIGHT_BG
@@ -81,7 +77,7 @@ SAVE_DIR = "nlp_final_results"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 
-# ---------- data loading ----------
+# data loading 
 def load_data():
     """
     Grab the sports and politics subsets from 20 Newsgroups.
@@ -110,12 +106,11 @@ def load_data():
     return dataset.data, labels
 
 
-# ---------- experiment config ----------
+# Define all classifiers, feature sets, and experiment combinations
 def get_configs():
     """
     All the feature/model combos I want to compare.
-    Keeping this in one place makes it easy to add or remove
-    experiments without touching the rest of the code.
+
     """
     classifiers = {
         'NB':           MultinomialNB(),
@@ -144,12 +139,11 @@ def get_configs():
     return classifiers, feature_sets, experiments
 
 
-# ---------- training & evaluation ----------
+# training & evaluation 
 def run_experiments(X_train, X_test, y_train, y_test):
     """
     Loop through every feature/model combo, train, predict, and
-    collect accuracy + F1.  Also stash the confusion matrices so
-    we can plot the best one later.
+    collect accuracy + F1. 
     """
     clfs, feats, combos = get_configs()
     rows = []
@@ -188,16 +182,12 @@ def run_experiments(X_train, X_test, y_train, y_test):
     return pd.DataFrame(rows), cm_dict
 
 
-# ========== VISUALISATIONS ==========
-# I tried to make these look polished enough for the report —
-# consistent colours, clean labels, and decent resolution (300 dpi).
-
+# VISUALISATIONS 
 
 def plot_top_keywords(X, y, category):
     """
     Horizontal bar chart of the 15 most frequent words in a given
-    category (Sports or Politics).  Gives a nice intuition for what
-    vocabulary defines each class.
+    category (Sports or Politics). 
     """
     print(f"  → Top keywords chart for {category}")
 
@@ -208,9 +198,9 @@ def plot_top_keywords(X, y, category):
     words = cv.get_feature_names_out()
 
     df = pd.DataFrame({'word': words, 'count': word_counts})
-    df = df.sort_values('count', ascending=True)     # ascending for horizontal bars
+    df = df.sort_values('count', ascending=True)    
 
-    # pick palette based on category
+    
     palette = sns.color_palette('YlOrRd_r', n_colors=len(df)) if category == 'Sports' \
               else sns.color_palette('GnBu_r', n_colors=len(df))
 
@@ -220,7 +210,7 @@ def plot_top_keywords(X, y, category):
     ax.set_xlabel('Frequency', fontweight='bold', color=SLATE)
     ax.tick_params(colors=SLATE)
 
-    # add count labels on bars
+    
     for bar in bars:
         w = bar.get_width()
         ax.text(w + max(df['count']) * 0.01, bar.get_y() + bar.get_height() / 2,
@@ -260,14 +250,12 @@ def plot_donut_chart(y):
 def plot_accuracy_ranking(df):
     """
     Horizontal bar chart ranking every feature+model combo by accuracy.
-    The gradient goes from warm (lower accuracy) to cool (higher),
-    so the best models visually "pop" in teal.
+    The gradient goes from warm (lower accuracy) to cool (higher).
     """
     print("  → Accuracy ranking chart")
     df_sorted = df.sort_values('Accuracy', ascending=True)
     n = len(df_sorted)
 
-    # gradient: warm coral → cool teal
     colors = [
         (CORAL if i < n // 3 else GOLD if i < 2 * n // 3 else TEAL)
         for i in range(n)
@@ -277,14 +265,12 @@ def plot_accuracy_ranking(df):
     bars = ax.barh(df_sorted['Configuration'], df_sorted['Accuracy'],
                    color=colors, edgecolor='white', linewidth=0.8)
 
-    # zoom into the interesting range
     lo = max(0.60, df_sorted['Accuracy'].min() - 0.03)
     ax.set_xlim(lo, 1.005)
     ax.set_xlabel('Accuracy', fontweight='bold', fontsize=13, color=SLATE)
     ax.set_title('Model Accuracy Ranking', fontsize=18, fontweight='bold', color=SLATE, pad=15)
     ax.tick_params(colors=SLATE)
 
-    # put the exact number next to each bar
     for bar in bars:
         w = bar.get_width()
         ax.text(w + 0.003, bar.get_y() + bar.get_height() / 2,
@@ -297,15 +283,14 @@ def plot_accuracy_ranking(df):
 
 def plot_confusion_matrix(cm_dict, best_name):
     """
-    Heatmap-style confusion matrix for the best-performing model.
-    Using a teal-based colormap to stay consistent with the palette.
+    confusion matrix for the best-performing model.
+    
     """
     print("  → Confusion matrix for best model")
     cm = cm_dict[best_name]
 
     fig, ax = plt.subplots(figsize=(8, 6.5))
 
-    # custom teal-ish colormap
     cmap = sns.light_palette(DARK_TEAL, as_cmap=True)
 
     sns.heatmap(cm, annot=True, fmt='d', cmap=cmap, cbar=False,
@@ -327,7 +312,7 @@ def plot_confusion_matrix(cm_dict, best_name):
 def plot_radar(df):
     """
     Small radar/spider chart showing accuracy & F1 for the best model.
-    A bit redundant info-wise, but it looks good in the report.
+
     """
     print("  → Radar performance chart")
     best = df.sort_values('Accuracy', ascending=False).iloc[0]
@@ -363,13 +348,10 @@ def plot_radar(df):
     plt.close()
 
 
-# ---------- grouped bar chart (bonus — accuracy vs F1 side by side) ----------
+# grouped bar chart 
 def plot_grouped_bars(df):
     """
     Side-by-side bar chart comparing accuracy and F1 for each config.
-    Added this because I thought it gives a cleaner comparison than
-    the ranking chart alone — you can see at a glance where accuracy
-    and F1 diverge.
     """
     print("  → Grouped accuracy vs F1 chart")
     df_sorted = df.sort_values('Accuracy', ascending=False)
@@ -394,7 +376,7 @@ def plot_grouped_bars(df):
     plt.close()
 
 
-# ========== MAIN ==========
+# MAIN 
 if __name__ == '__main__':
 
     # 1. load data
